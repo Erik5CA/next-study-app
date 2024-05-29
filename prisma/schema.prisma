@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  name     String  
+  email    String   @unique  
+  password String
+  bio      String?
+  
+  // Relaciones
+  roomsHosted    Room[]    @relation("HostRelation")
+  messages       Message[]
+  participating  Room[]    @relation("Participants")
+
+  // Datos automáticos
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Topic {
+  id   Int     @id @default(autoincrement())
+  name String  
+
+  // Relaciones
+  rooms Room[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Room {
+  id          Int       @id @default(autoincrement())
+  hostId      Int?
+  topicId     Int?
+  name        String    
+  description String?
+
+  // Relaciones
+  host        User?     @relation("HostRelation", fields: [hostId], references: [id])
+  topic       Topic?    @relation(fields: [topicId], references: [id])
+  messages    Message[]
+  participants User[]   @relation("Participants")
+
+  // Datos automáticos
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  roomId   Int
+  body     String
+
+  // Relaciones
+  user     User     @relation(fields: [userId], references: [id])
+  room     Room     @relation(fields: [roomId], references: [id])
+
+  // Datos automáticos
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

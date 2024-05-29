@@ -7,7 +7,7 @@ interface Props {
 }
 
 function Avatar({ size }: Props) {
-  console.log(size);
+  // console.log(size);
   return (
     <div className="relative inline-block rounded-full border-[2px] border-blue-600 z-0">
       <Image

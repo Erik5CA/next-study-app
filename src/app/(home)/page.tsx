@@ -1,8 +1,13 @@
+"use client";
+
 import CardRoom from "@/components/card-room/CardRoom";
 import Search from "@/components/search/Search";
 import { Plus } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 function HomePage() {
+  const { data: session, status } = useSession();
+  console.log({ session, status });
   return (
     <div>
       <Search />

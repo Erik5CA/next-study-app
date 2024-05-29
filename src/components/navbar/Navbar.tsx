@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, Search } from "lucide-react";
-import Avatar from "../avatar/Avatar";
 import AvatarLink from "../avatar/AvatarLink";
+import { getServerSession } from "next-auth";
+import Logout from "../buttons/Logout";
 
-function Navbar() {
+async function Navbar() {
+  const session = await getServerSession();
   return (
     <nav className="p-3 bg-emerald-600 w-full">
       <div className="max-w-[120rem] w-[90%] m-auto flex gap-8 lg:gap-28 items-center">
@@ -32,14 +34,23 @@ function Navbar() {
           </label>
         </form>
 
-        <div className="ml-auto relative">
-          <div className="flex gap-3 items-center">
-            <AvatarLink type="nav" />
-            <button className="bg-transparent border-none  cursor-pointer rounded hover:bg-emerald-900">
-              <ChevronDown />
-            </button>
+        {session ? (
+          <>
+            <div className="ml-auto relative">
+              <div className="flex gap-3 items-center">
+                <AvatarLink type="nav" />
+                <button className="bg-transparent border-none  cursor-pointer rounded hover:bg-emerald-900">
+                  <ChevronDown />
+                </button>
+              </div>
+            </div>
+            <Logout />
+          </>
+        ) : (
+          <div className="ml-auto">
+            <Link href="/login">Login</Link>
           </div>
-        </div>
+        )}
       </div>
     </nav>
   );
