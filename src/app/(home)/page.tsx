@@ -1,13 +1,23 @@
-"use client";
-
-import CardRoom from "@/components/card-room/CardRoom";
+import ListRooms from "@/components/card-room/ListRooms";
 import Search from "@/components/search/Search";
 import { Plus } from "lucide-react";
-import { useSession } from "next-auth/react";
+import Link from "next/link";
+import prisma from "@/libs/db";
+import { Prisma } from "@prisma/client";
 
-function HomePage() {
-  const { data: session, status } = useSession();
-  console.log({ session, status });
+async function getRooms() {
+  const rooms = await prisma.room.findMany({
+    include: {
+      participants: true,
+    },
+  });
+  return rooms;
+}
+
+export type RoomsWithParticipants = Prisma.PromiseReturnType<typeof getRooms>;
+
+async function HomePage() {
+  const rooms = await getRooms();
   return (
     <div>
       <Search />
@@ -26,14 +36,16 @@ function HomePage() {
           <h4 className="uppercase text-sm md:text-xl font-bold">study room</h4>
           <span className="text-emerald-400 text-sm ">4 room available</span>
         </div>
-        <button className="bg-emerald-500 py-3 px-2 md:px-3 rounded-md text-slate-600 flex items-center gap-1 hover:bg-emerald-800 hover:text-slate-400 transition-all">
+        <Link
+          href="/create-room"
+          className="bg-emerald-500 py-3 px-2 md:px-3 rounded-md text-slate-600 flex items-center gap-1 hover:bg-emerald-800 hover:text-slate-400 transition-all"
+        >
           <Plus />
           <span className="text-sm">Create Room</span>
-        </button>
+        </Link>
       </div>
 
-      <CardRoom />
-      <CardRoom />
+      <ListRooms rooms={rooms} />
     </div>
   );
 }

@@ -39,7 +39,7 @@ const handler = NextAuth({
       return token;
     },
     session({ session, token, user }) {
-      console.log({ session, token, user });
+      // console.log({ session, token, user });
       session.user = token.user as any;
       return session;
     },

@@ -22,7 +22,10 @@ function LoginPage() {
       });
 
       if (resSignIn?.error) return setError(resSignIn.error);
-      if (resSignIn?.ok) return router.push("/");
+      if (resSignIn?.ok) {
+        router.push("/");
+        router.refresh();
+      }
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);

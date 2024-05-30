@@ -1,12 +1,26 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, Search } from "lucide-react";
 import AvatarLink from "../avatar/AvatarLink";
-import { getServerSession } from "next-auth";
 import Logout from "../buttons/Logout";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import clsx from "clsx";
 
-async function Navbar() {
-  const session = await getServerSession();
+interface sessionUser {
+  name: string | null;
+  email: string | null;
+  id: string | null;
+}
+
+function Navbar() {
+  const { data: session, status } = useSession();
+  const user = session?.user as sessionUser;
+  const [open, setOpen] = useState(false);
+  const handleClick = () => {
+    setOpen(!open);
+  };
   return (
     <nav className="p-3 bg-emerald-600 w-full">
       <div className="max-w-[120rem] w-[90%] m-auto flex gap-8 lg:gap-28 items-center">
@@ -34,21 +48,38 @@ async function Navbar() {
           </label>
         </form>
 
-        {session ? (
+        {status === "authenticated" ? (
           <>
             <div className="ml-auto relative">
               <div className="flex gap-3 items-center">
-                <AvatarLink type="nav" />
-                <button className="bg-transparent border-none  cursor-pointer rounded hover:bg-emerald-900">
+                <AvatarLink type="nav" user={user} />
+                <button
+                  className="bg-transparent border-none  cursor-pointer rounded hover:bg-emerald-900"
+                  onClick={handleClick}
+                >
                   <ChevronDown />
                 </button>
               </div>
+              <div
+                className={clsx(
+                  "absolute -bottom-11 right-0 bg-emerald-600 border border-white/50 rounded-md",
+                  {
+                    hidden: open === false,
+                  }
+                )}
+              >
+                <Logout />
+              </div>
             </div>
-            <Logout />
           </>
         ) : (
           <div className="ml-auto">
-            <Link href="/login">Login</Link>
+            <Link
+              href="/login"
+              className="hover:bg-emerald-800 py-2 px-3 rounded-md"
+            >
+              Login
+            </Link>
           </div>
         )}
       </div>

@@ -2,7 +2,7 @@ import Activity from "./Activity";
 
 function ActivityList() {
   return (
-    <div className="hidden md:block bg-emerald-700 rounded-md">
+    <div className="hidden md:block bg-emerald-700 rounded-md h-min sticky top-4">
       <h3 className="bg-emerald-900 uppercase text-sm p-3 rounded-t-md">
         Recent Activities
       </h3>
