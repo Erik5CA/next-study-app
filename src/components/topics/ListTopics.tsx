@@ -3,6 +3,7 @@ import { Topic } from "@prisma/client";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import clsx from "clsx";
+import { cn } from "@/libs/utils";
 
 interface Props {
   topics: Topic[];
@@ -13,6 +14,7 @@ interface Props {
 function ListTopics({ topics, roomCounts, totalRooms }: Props) {
   const searchParams = useSearchParams();
   const query = searchParams.get("query") || "";
+  console.log({ topics, roomCounts });
   return (
     <div className="flex flex-col gap-3">
       <Link
@@ -20,7 +22,7 @@ function ListTopics({ topics, roomCounts, totalRooms }: Props) {
         className="flex justify-between items-center hover:bg-slate-900 hover:text-emerald-400 transition-all p-2 rounded-md cursor-pointer"
       >
         <span
-          className={clsx("text-slate-300", {
+          className={cn("text-slate-300", {
             "font-bold text-emerald-600": query === "",
           })}
         >
@@ -30,21 +32,24 @@ function ListTopics({ topics, roomCounts, totalRooms }: Props) {
           {totalRooms}
         </span>
       </Link>
-      {topics.map((topic, index) => (
+      {topics?.map((topic, index) => (
         <Link
           href={`/?query=${topic.name}`}
           key={topic.id}
           className="flex justify-between items-center hover:bg-slate-900 hover:text-emerald-400 transition-all p-2 rounded-md cursor-pointer"
         >
           <span
-            className={clsx("text-slate-300 capitalize", {
+            className={cn("text-slate-300 capitalize", {
               "font-bold text-emerald-600": query === topic.name,
             })}
           >
             {topic.name}
           </span>
+
           <span className="px-3 py-1 rounded-md text-emerald-400 bg-emerald-500/30">
-            {roomCounts[index]._count.id}
+            {roomCounts.map((item) =>
+              item.topicId === topic.id ? item._count.id : 0
+            )}
           </span>
         </Link>
       ))}

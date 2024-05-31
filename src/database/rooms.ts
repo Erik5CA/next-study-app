@@ -1,6 +1,17 @@
 import prisma from "@/libs/db";
 import { Prisma } from "@prisma/client";
 
+export async function getRoom(id: number){
+  const room = await prisma.room.findUnique({
+    where:{
+      id: id
+    }
+  })
+  if (room) return room
+
+  return null
+}
+
 export async function getRooms(query: string) {
   if (query === "") {
     const rooms = await prisma.room.findMany({
@@ -72,8 +83,6 @@ export type MessageWithUserRoom = Prisma.MessageGetPayload<
   typeof messageWithUserRoom
 >;
 
-export type RoomsWithParticipants = Prisma.PromiseReturnType<typeof getRooms>;
-
 export async function getUserWithHostedRoomsAndParticipants(userId: number) {
   try {
     const user = await prisma.user.findUnique({
@@ -99,6 +108,14 @@ export async function getUserWithHostedRoomsAndParticipants(userId: number) {
     throw error;
   }
 }
+
+const roomsWithParticipants = Prisma.validator<Prisma.RoomDefaultArgs>()({
+  include: { participants: true },
+});
+
+export type RoomsWithParticipants = Prisma.RoomGetPayload<
+  typeof roomsWithParticipants
+>;
 
 export async function getInfoRoom(roomId: number) {
   const room = await prisma.room.findUnique({

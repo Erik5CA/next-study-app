@@ -53,3 +53,16 @@ export async function createNewRoom(formData: FormData) {
   revalidatePath("/");
   redirect("/");
 }
+
+export async function deleteRoom(formData: FormData) {
+  const roomId = formData.get("roomId")?.toString();
+  if (!roomId) return;
+  const room = await prisma.room.delete({
+    where: {
+      id: parseInt(roomId),
+    },
+  });
+  console.log(room);
+  revalidatePath("/");
+  redirect("/");
+}

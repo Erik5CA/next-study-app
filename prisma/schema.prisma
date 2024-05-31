@@ -46,8 +46,8 @@ model Room {
   description String?
 
   // Relaciones
-  host        User?     @relation("HostRelation", fields: [hostId], references: [id])
-  topic       Topic?    @relation(fields: [topicId], references: [id])
+  host        User?     @relation("HostRelation", fields: [hostId], references: [id], onDelete: SetNull)
+  topic       Topic?    @relation(fields: [topicId], references: [id], onDelete: SetNull)
   messages    Message[]
   participants User[]   @relation("Participants")
 
@@ -63,8 +63,8 @@ model Message {
   body     String
 
   // Relaciones
-  user     User     @relation(fields: [userId], references: [id])
-  room     Room     @relation(fields: [roomId], references: [id])
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room     Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   // Datos automáticos
   createdAt DateTime @default(now())

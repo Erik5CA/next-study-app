@@ -5,7 +5,12 @@ import { signOut } from "next-auth/react";
 function Logout() {
   return (
     <button
-      onClick={() => signOut()}
+      onClick={() =>
+        signOut({
+          callbackUrl: "/",
+          redirect: true,
+        })
+      }
       className="hover:bg-emerald-700 py-2 px-3 rounded-md"
     >
       Logout

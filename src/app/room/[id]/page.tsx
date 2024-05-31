@@ -3,17 +3,28 @@ import AvatarLink from "@/components/avatar/AvatarLink";
 import ListMessages from "@/components/message/ListMessages";
 import { getInfoRoom } from "@/database/rooms";
 import { timeAgo } from "@/libs/utils";
-import { Send } from "lucide-react";
+import { Edit, Send, X } from "lucide-react";
+import { getServerSession } from "next-auth";
+import Link from "next/link";
 
 async function RoomPage({ params }: { params: { id: string } }) {
   const roomId = parseInt(params.id);
   const room = await getInfoRoom(roomId);
+  const session = await getServerSession();
   return (
     <div className="p-4 grid grid-cols-1 md:grid-cols-[6fr_2fr] gap-10 md:px-10">
       <div className=" bg-emerald-700 rounded-md h-min">
-        <h3 className="bg-emerald-900 uppercase text-sm p-3 rounded-t-md">
-          Study Room
-        </h3>
+        <div className="flex justify-between items-center bg-emerald-900 rounded-t-md p-3">
+          <h3 className="uppercase text-sm">Study Room</h3>
+          <div className="flex justify-center items-center gap-3">
+            <Link href={`/update-room/${roomId}`}>
+              <Edit />
+            </Link>
+            <Link href={`/delete-room/${roomId}`}>
+              <X />
+            </Link>
+          </div>
+        </div>
 
         <div className="p-4 md:p-6">
           <div className="flex justify-between">
@@ -34,22 +45,28 @@ async function RoomPage({ params }: { params: { id: string } }) {
 
           <ListMessages messages={room?.messages} />
 
-          <form
-            className="w-full sticky bottom-0 flex justify-between items-center p-1 rounded-md bg-teal-600"
-            action={createNewMessage}
-          >
-            <input type="hidden" name="roomId" value={room?.id} />
-            <input
-              type="text"
-              name="body"
-              title="Send"
-              className="bg-transparent border-none w-[80%] outline-none p-1 text-sm placeholder:text-slate-300"
-              placeholder="Write your message here..."
-            />
-            <button className="bg-teal-700 flex mr-2 justify-center items-center p-1 rounded-full shadow-sm">
-              <Send />
-            </button>
-          </form>
+          {session ? (
+            <form
+              className="w-full sticky bottom-0 flex justify-between items-center p-1 rounded-md bg-teal-600"
+              action={createNewMessage}
+            >
+              <input type="hidden" name="roomId" value={room?.id} />
+              <input
+                type="text"
+                name="body"
+                title="Send"
+                className="bg-transparent border-none w-[80%] outline-none p-1 text-sm placeholder:text-slate-300"
+                placeholder="Write your message here..."
+              />
+              <button className="bg-teal-700 flex mr-2 justify-center items-center p-1 rounded-full shadow-sm">
+                <Send />
+              </button>
+            </form>
+          ) : (
+            <p className="text-center text-slate-300 mt-3 font-bold">
+              To send message you must login
+            </p>
+          )}
         </div>
       </div>
 
