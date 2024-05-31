@@ -1,12 +1,13 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import AvatarLink from "../avatar/AvatarLink";
 import Logout from "../buttons/Logout";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import clsx from "clsx";
+import Search from "../search/Search";
 
 interface sessionUser {
   name: string | null;
@@ -17,6 +18,7 @@ interface sessionUser {
 function Navbar() {
   const { data: session, status } = useSession();
   const user = session?.user as sessionUser;
+  // console.log(session);
   const [open, setOpen] = useState(false);
   const handleClick = () => {
     setOpen(!open);
@@ -37,16 +39,7 @@ function Navbar() {
           </h1>
         </Link>
 
-        <form className="hidden md:block">
-          <label className="bg-emerald-950 py-3 px-4 flex items-center gap-4 rounded">
-            <Search />
-            <input
-              type="text"
-              placeholder="Search"
-              className="w-[20rem] bg-transparent border-none outline-none text-white"
-            />
-          </label>
-        </form>
+        <Search type="nav" />
 
         {status === "authenticated" ? (
           <>

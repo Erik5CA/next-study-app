@@ -1,19 +1,28 @@
-import prisma from "@/libs/db";
 import CardRoom from "./CardRoom";
-import { Room, User, Prisma } from "@prisma/client";
-import { RoomsWithParticipants } from "@/app/(home)/page";
+import { getRooms } from "@/database/rooms";
 
 interface Props {
-  rooms: RoomsWithParticipants | undefined;
+  query: string;
 }
 
-async function ListRooms({ rooms }: Props) {
-  console.log(rooms);
+async function ListRooms({ query }: Props) {
+  const { rooms, count } = await getRooms(query);
+
   return (
     <div>
-      {rooms?.map((room) => (
-        <CardRoom room={room} key={room.id} />
-      ))}
+      {count !== 0 ? (
+        <>
+          {rooms?.map((room) => (
+            <CardRoom room={room} key={room.id} />
+          ))}
+        </>
+      ) : (
+        <div className="bg-emerald-600 text-center p-4 mt-3 rounded-md">
+          <p className="text-sm font-semibold">
+            No rooms found for <span className="italic">{query}</span>
+          </p>
+        </div>
+      )}
     </div>
   );
 }

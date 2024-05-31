@@ -1,26 +1,20 @@
 import ListRooms from "@/components/card-room/ListRooms";
 import Search from "@/components/search/Search";
+import { getRooms } from "@/database/rooms";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import prisma from "@/libs/db";
-import { Prisma } from "@prisma/client";
+import { Suspense } from "react";
 
-async function getRooms() {
-  const rooms = await prisma.room.findMany({
-    include: {
-      participants: true,
-    },
-  });
-  return rooms;
-}
-
-export type RoomsWithParticipants = Prisma.PromiseReturnType<typeof getRooms>;
-
-async function HomePage() {
-  const rooms = await getRooms();
+async function HomePage({
+  searchParams,
+}: {
+  searchParams?: { query?: string };
+}) {
+  const query = searchParams?.query || "";
+  const { count } = await getRooms(query);
   return (
     <div>
-      <Search />
+      <Search type="feed" />
 
       <div className="md:hidden flex justify-center items-center gap-3 my-4">
         <h3 className="border-[3px] border-emerald-500 text-emerald-500 font-bold text-xs md:text-sm rounded-3xl py-1 px-3">
@@ -34,7 +28,9 @@ async function HomePage() {
       <div className="flex justify-between items-center">
         <div>
           <h4 className="uppercase text-sm md:text-xl font-bold">study room</h4>
-          <span className="text-emerald-400 text-sm ">4 room available</span>
+          <span className="text-emerald-400 text-sm ">
+            {count} room available
+          </span>
         </div>
         <Link
           href="/create-room"
@@ -45,7 +41,9 @@ async function HomePage() {
         </Link>
       </div>
 
-      <ListRooms rooms={rooms} />
+      <Suspense fallback={<h1>Loading...</h1>}>
+        <ListRooms query={query} />
+      </Suspense>
     </div>
   );
 }

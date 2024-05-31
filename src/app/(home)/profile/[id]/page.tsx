@@ -1,38 +1,11 @@
 import AvatarLink from "@/components/avatar/AvatarLink";
 import Link from "next/link";
-import prisma from "@/libs/db";
 import { getServerSession } from "next-auth";
-import ListRooms from "@/components/card-room/ListRooms";
-
-async function getUserWithHostedRoomsAndParticipants(userId: number) {
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-      include: {
-        roomsHosted: {
-          include: {
-            participants: true,
-          },
-        },
-      },
-    });
-
-    if (!user) {
-      throw new Error(`User with id ${userId} not found.`);
-    }
-
-    return user;
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    throw error;
-  }
-}
+import { getUserWithHostedRoomsAndParticipants } from "@/database/rooms";
+import ListRoomUserHosted from "@/components/card-room/ListRoomUserHosted";
 
 async function ProfilePage({ params }: { params: { id: string } }) {
   const session = await getServerSession();
-  console.log(session);
   const user = await getUserWithHostedRoomsAndParticipants(parseInt(params.id));
 
   return (
@@ -64,7 +37,7 @@ async function ProfilePage({ params }: { params: { id: string } }) {
         </p>
       </div>
 
-      <ListRooms rooms={user?.roomsHosted} />
+      <ListRoomUserHosted rooms={user?.roomsHosted} />
     </div>
   );
 }
