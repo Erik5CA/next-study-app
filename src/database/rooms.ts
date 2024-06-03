@@ -1,15 +1,29 @@
 import prisma from "@/libs/db";
 import { Prisma } from "@prisma/client";
 
-export async function getRoom(id: number){
+export async function getRoom(id: number) {
   const room = await prisma.room.findUnique({
-    where:{
-      id: id
-    }
-  })
-  if (room) return room
+    where: {
+      id: id,
+    },
+  });
+  if (room) return room;
 
-  return null
+  return null;
+}
+
+export async function getRoomWithTopic(id: number) {
+  const room = await prisma.room.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      topic: true,
+    },
+  });
+  if (room) return room;
+
+  return null;
 }
 
 export async function getRooms(query: string) {

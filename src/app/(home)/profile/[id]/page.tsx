@@ -2,7 +2,7 @@ import AvatarLink from "@/components/avatar/AvatarLink";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { getUserWithHostedRoomsAndParticipants } from "@/database/rooms";
-import ListRoomUserHosted from "@/components/card-room/ListRoomUserHosted";
+import ListRoomUserHosted from "@/components/room/ListRoomUserHosted";
 import ActivityList from "@/components/activity/ActivityList";
 
 async function ProfilePage({ params }: { params: { id: string } }) {
@@ -22,17 +22,13 @@ async function ProfilePage({ params }: { params: { id: string } }) {
               Edit Profile
             </Link>
           )}
+        </div>
 
-          <div className="flex flex-col gap-2">
-            <p className="font-bold text-sm text-emerald-400 uppercase">
-              About
-            </p>
-            <p className="text-slate-400">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Voluptatibus quibusdam, iure doloribus temporibus omnis pariatur
-              reprehenderit laudantium autem quis perferendis.
-            </p>
-          </div>
+        <div className="flex flex-col gap-2">
+          <p className="font-bold text-sm text-emerald-400 uppercase">About</p>
+          <p className="text-slate-400">
+            {user?.bio ? user.bio : "Go to Edit Perfil to add Bio"}
+          </p>
         </div>
 
         <div className="mt-4">

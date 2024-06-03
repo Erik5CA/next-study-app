@@ -47,8 +47,8 @@ function ListTopics({ topics, roomCounts, totalRooms }: Props) {
           </span>
 
           <span className="px-3 py-1 rounded-md text-emerald-400 bg-emerald-500/30">
-            {roomCounts.map((item) =>
-              item.topicId === topic.id ? item._count.id : 0
+            {roomCounts.map(
+              (item) => item.topicId === topic.id && item._count.id
             )}
           </span>
         </Link>

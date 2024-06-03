@@ -66,3 +66,35 @@ export async function deleteRoom(formData: FormData) {
   revalidatePath("/");
   redirect("/");
 }
+
+export async function updateRoom(formData: FormData) {
+  const topic = formData.get("topic")?.toString().toLowerCase();
+  const name = formData.get("name")?.toString();
+  const description = formData.get("description")?.toString();
+  const roomId = formData.get("roomId")?.toString();
+
+  if (!topic || !name || !description || !roomId) return;
+
+  const room = await prisma.room.update({
+    where: {
+      id: parseInt(roomId),
+    },
+    data: {
+      name: name,
+      description: description,
+      topic: {
+        connectOrCreate: {
+          where: {
+            name: topic,
+          },
+          create: {
+            name: topic,
+          },
+        },
+      },
+    },
+  });
+  console.log(room);
+  revalidatePath("/");
+  redirect("/");
+}

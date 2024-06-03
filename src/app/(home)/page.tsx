@@ -1,5 +1,5 @@
 import ActivityList from "@/components/activity/ActivityList";
-import ListRooms from "@/components/card-room/ListRooms";
+import ListRooms from "@/components/room/ListRooms";
 import Search from "@/components/search/Search";
 import { getRooms } from "@/database/rooms";
 import { Plus } from "lucide-react";

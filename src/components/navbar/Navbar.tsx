@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, User } from "lucide-react";
 import AvatarLink from "../avatar/AvatarLink";
 import Logout from "../buttons/Logout";
 import { useSession } from "next-auth/react";
@@ -55,23 +55,37 @@ function Navbar() {
               </div>
               <div
                 className={clsx(
-                  "absolute -bottom-11 right-0 bg-emerald-600 border border-white/50 rounded-md",
+                  "absolute flex flex-col -bottom-24 right-0 bg-emerald-600 border border-white/50 rounded-md z-50 w-max",
                   {
                     hidden: open === false,
                   }
                 )}
               >
+                <Link
+                  href={`/update-user`}
+                  className="flex justify-center items-center gap-4 hover:bg-emerald-700 py-2 px-3 rounded-md cursor-pointer"
+                  onClick={() => setOpen(false)}
+                >
+                  <User />
+                  Edit Profile
+                </Link>
                 <Logout />
               </div>
             </div>
           </>
         ) : (
-          <div className="ml-auto">
+          <div className="ml-auto flex gap-4">
             <Link
               href="/login"
               className="hover:bg-emerald-800 py-2 px-3 rounded-md"
             >
               Login
+            </Link>
+            <Link
+              href="/register"
+              className="hover:bg-emerald-800 py-2 px-3 rounded-md"
+            >
+              Register
             </Link>
           </div>
         )}

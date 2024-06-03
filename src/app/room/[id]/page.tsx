@@ -16,14 +16,16 @@ async function RoomPage({ params }: { params: { id: string } }) {
       <div className=" bg-emerald-700 rounded-md h-min">
         <div className="flex justify-between items-center bg-emerald-900 rounded-t-md p-3">
           <h3 className="uppercase text-sm">Study Room</h3>
-          <div className="flex justify-center items-center gap-3">
-            <Link href={`/update-room/${roomId}`}>
-              <Edit />
-            </Link>
-            <Link href={`/delete-room/${roomId}`}>
-              <X />
-            </Link>
-          </div>
+          {session?.user?.email === room?.host?.email && (
+            <div className="flex justify-center items-center gap-3">
+              <Link href={`/update-room/${roomId}`}>
+                <Edit />
+              </Link>
+              <Link href={`/delete-room/${roomId}`}>
+                <X />
+              </Link>
+            </div>
+          )}
         </div>
 
         <div className="p-4 md:p-6">
