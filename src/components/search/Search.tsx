@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { useDebouncedCallback } from "use-debounce";
 
 interface Props {
-  type: "nav" | "feed";
+  type: "nav" | "feed" | "browse";
 }
 
 function Search({ type }: Props) {
@@ -21,7 +21,12 @@ function Search({ type }: Props) {
       newParams.delete("query");
     }
 
-    replace(`/?${newParams.toString()}`);
+    const url =
+      type === "browse"
+        ? `${pathname}?&${newParams.toString()}`
+        : `/?${newParams.toString()}`;
+
+    replace(url);
   }, 350);
 
   return (
@@ -29,6 +34,7 @@ function Search({ type }: Props) {
       className={clsx("", {
         "block md:hidden": type === "feed",
         "hidden md:block": type === "nav",
+        block: type === "browse",
       })}
     >
       <label className="bg-emerald-950 py-3 px-4 flex items-center gap-1 md:gap-4 rounded">
@@ -36,7 +42,9 @@ function Search({ type }: Props) {
         <input
           name="q"
           type="text"
-          placeholder="Search for rooms..."
+          placeholder={
+            type === "browse" ? "Search for topics..." : "Search for rooms..."
+          }
           className=" bg-transparent border-none outline-none text-white text-sm"
           onChange={(e) => handleChange(e.target.value)}
           defaultValue={params.get("query")?.toString()}

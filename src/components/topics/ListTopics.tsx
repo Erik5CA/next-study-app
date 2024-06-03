@@ -4,22 +4,26 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import clsx from "clsx";
 import { cn } from "@/libs/utils";
+import { TopicWithCount } from "@/database/rooms";
 
 interface Props {
-  topics: Topic[];
-  roomCounts: any[];
+  topics: TopicWithCount[];
   totalRooms: number;
 }
 
-function ListTopics({ topics, roomCounts, totalRooms }: Props) {
+function ListTopics({ topics, totalRooms }: Props) {
   const searchParams = useSearchParams();
   const query = searchParams.get("query") || "";
-  console.log({ topics, roomCounts });
   return (
     <div className="flex flex-col gap-3">
       <Link
         href="/"
-        className="flex justify-between items-center hover:bg-slate-900 hover:text-emerald-400 transition-all p-2 rounded-md cursor-pointer"
+        className={cn(
+          "flex justify-between items-center hover:bg-slate-900 hover:text-emerald-400 transition-all p-2 rounded-md cursor-pointer",
+          {
+            "bg-slate-900": query === "",
+          }
+        )}
       >
         <span
           className={cn("text-slate-300", {
@@ -36,7 +40,12 @@ function ListTopics({ topics, roomCounts, totalRooms }: Props) {
         <Link
           href={`/?query=${topic.name}`}
           key={topic.id}
-          className="flex justify-between items-center hover:bg-slate-900 hover:text-emerald-400 transition-all p-2 rounded-md cursor-pointer"
+          className={cn(
+            "flex justify-between items-center hover:bg-slate-900 hover:text-emerald-400 transition-all p-2 rounded-md cursor-pointer",
+            {
+              "bg-slate-900": query === topic.name,
+            }
+          )}
         >
           <span
             className={cn("text-slate-300 capitalize", {
@@ -47,9 +56,7 @@ function ListTopics({ topics, roomCounts, totalRooms }: Props) {
           </span>
 
           <span className="px-3 py-1 rounded-md text-emerald-400 bg-emerald-500/30">
-            {roomCounts.map(
-              (item) => item.topicId === topic.id && item._count.id
-            )}
+            {topic._count.rooms}
           </span>
         </Link>
       ))}

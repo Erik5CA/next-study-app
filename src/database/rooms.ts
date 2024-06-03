@@ -131,6 +131,18 @@ export type RoomsWithParticipants = Prisma.RoomGetPayload<
   typeof roomsWithParticipants
 >;
 
+const topicWithCount = Prisma.validator<Prisma.TopicDefaultArgs>()({
+  include: {
+    _count: {
+      select: {
+        rooms: true,
+      },
+    },
+  },
+});
+
+export type TopicWithCount = Prisma.TopicGetPayload<typeof topicWithCount>;
+
 export async function getInfoRoom(roomId: number) {
   const room = await prisma.room.findUnique({
     where: {
@@ -159,4 +171,22 @@ export async function getInfoUser(id: number) {
     return user;
   }
   return null;
+}
+
+export async function filterTopics(query: string) {
+  const topics = await prisma.topic.findMany({
+    where: {
+      name: {
+        contains: query,
+      },
+    },
+    include: {
+      _count: {
+        select: {
+          rooms: true,
+        },
+      },
+    },
+  });
+  return topics;
 }

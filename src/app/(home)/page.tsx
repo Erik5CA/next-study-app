@@ -19,12 +19,18 @@ async function HomePage({
         <Search type="feed" />
 
         <div className="md:hidden flex justify-center items-center gap-3 my-4">
-          <h3 className="border-[3px] border-emerald-500 text-emerald-500 font-bold text-xs md:text-sm rounded-3xl py-1 px-3">
+          <Link
+            href="/topics"
+            className="border-[3px] border-emerald-500 text-emerald-500 font-bold text-xs md:text-sm rounded-3xl py-1 px-3"
+          >
             Browser Topics
-          </h3>
-          <h3 className="border-[3px] border-emerald-400 text-emerald-400 font-bold text-xs md:text-sm rounded-3xl py-1 px-3">
+          </Link>
+          <Link
+            href="/activity"
+            className="border-[3px] border-emerald-400 text-emerald-400 font-bold text-xs md:text-sm rounded-3xl py-1 px-3"
+          >
             Recent Activities
-          </h3>
+          </Link>
         </div>
 
         <div className="flex justify-between items-center">
