@@ -6,8 +6,16 @@ import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+type Error = {
+  name?: string[];
+  email?: string[];
+  password?: string[];
+  passwordMatch: string[];
+  user?: string;
+};
+
 function RegisterPage() {
-  const [error, setError] = useState();
+  const [error, setError] = useState<Error>();
   const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -16,7 +24,8 @@ function RegisterPage() {
     const password = formData.get("password");
     const password2 = formData.get("password2");
 
-    if (password !== password2) return;
+    if (password !== password2)
+      return setError({ passwordMatch: ["Password don´t match"] });
 
     try {
       const res = await axios.post("api/auth/signup", {
@@ -59,6 +68,15 @@ function RegisterPage() {
             placeholder="Your name"
             className="bg-transparent border w-full border-white/50 p-2 rounded-md placeholder:text-slate-300 focus:outline-green-500 outline-none mb-2"
           />
+          {error?.name &&
+            error.name.map((error) => (
+              <p
+                key={error}
+                className="text-red-200 p-1 text-center bg-red-600/50 rounded-sm text-sm"
+              >
+                {error}
+              </p>
+            ))}
 
           <label htmlFor="email" className="text-slate-300 mb-2">
             Email:
@@ -69,6 +87,15 @@ function RegisterPage() {
             placeholder="Your email"
             className="bg-transparent border w-full border-white/50 p-2 rounded-md placeholder:text-slate-300 focus:outline-green-500 outline-none mb-2"
           />
+          {error?.email &&
+            error.email.map((error) => (
+              <p
+                key={error}
+                className="text-red-200 p-1 text-center bg-red-600/50 rounded-sm text-sm"
+              >
+                {error}
+              </p>
+            ))}
 
           <label htmlFor="password" className="text-slate-300 mb-2">
             Password:
@@ -79,6 +106,15 @@ function RegisterPage() {
             placeholder="Your password"
             className="bg-transparent border w-full border-white/50 p-2 rounded-md placeholder:text-slate-300 focus:outline-green-500 outline-none mb-2"
           />
+          {error?.password &&
+            error.password.map((error) => (
+              <p
+                key={error}
+                className="text-red-200 p-1 text-center bg-red-600/50 rounded-sm text-sm"
+              >
+                {error}
+              </p>
+            ))}
 
           <label htmlFor="password2" className="text-slate-300 mb-2">
             Confirm Password:
@@ -89,15 +125,24 @@ function RegisterPage() {
             placeholder="Confirm Your password"
             className="bg-transparent border w-full border-white/50 p-2 rounded-md placeholder:text-slate-300 focus:outline-green-500 outline-none mb-2"
           />
+          {error?.passwordMatch &&
+            error.passwordMatch.map((error) => (
+              <p
+                key={error}
+                className="text-red-200 p-1 text-center bg-red-600/50 rounded-sm text-sm"
+              >
+                {error}
+              </p>
+            ))}
 
           <button className="flex items-center justify-center gap-2 rounded-md bg-emerald-800 w-full font-semibold mt-2 py-2 hover:bg-emerald-700 transition-all shadow-md">
             <UserPlus />
             Register
           </button>
 
-          {error && (
-            <div className="w-full bg-red-600/50 text-white p-2 text-center rounded-md mt-2">
-              {error}
+          {error?.user && (
+            <div className="w-full bg-red-600/50 text-red-300 p-2 text-center rounded-md mt-2">
+              {error.user}
             </div>
           )}
         </div>

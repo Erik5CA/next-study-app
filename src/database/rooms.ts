@@ -26,6 +26,8 @@ export async function getRoomWithTopic(id: number) {
   return null;
 }
 
+export type RoomWithTopic = Prisma.PromiseReturnType<typeof getRoomWithTopic>;
+
 export async function getRooms(query: string) {
   if (query === "") {
     const rooms = await prisma.room.findMany({

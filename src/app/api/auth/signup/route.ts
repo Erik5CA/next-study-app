@@ -1,50 +1,52 @@
 import prisma from "@/libs/db";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { z } from "zod";
+
+const FormSchema = z.object({
+  name: z
+    .string({
+      required_error: "Name is required",
+    })
+    .min(3, {
+      message: "Name must be at least 3 characters",
+    }),
+  email: z
+    .string({
+      required_error: "Email is required",
+    })
+    .email({
+      message: "Must be a valid email",
+    }),
+  password: z
+    .string({
+      required_error: "Password is required",
+    })
+    .min(6, {
+      message: "Password must be at least 6 character",
+    }),
+});
 
 export async function POST(request: Request) {
   const { name, email, password } = await request.json();
   // console.log({ name, email, password });
 
-  if (!password || password.length < 6)
-    return NextResponse.json(
-      {
-        message: "Password must be at least 6 character",
-      },
-      {
-        status: 400,
-      }
-    );
+  const validate = FormSchema.safeParse({
+    name: name,
+    email: email,
+    password: password,
+  });
 
-  if (!email)
+  if (!validate.success) {
     return NextResponse.json(
       {
-        message: "Email is required",
+        message: validate.error.flatten().fieldErrors,
       },
       {
         status: 400,
       }
     );
-
-  if (!name)
-    return NextResponse.json(
-      {
-        message: "Name is required",
-      },
-      {
-        status: 400,
-      }
-    );
-
-  if (!email.includes("@"))
-    return NextResponse.json(
-      {
-        message: "Email must be a valid email",
-      },
-      {
-        status: 400,
-      }
-    );
+  }
 
   try {
     const userFound = await prisma.user.findFirst({
@@ -56,7 +58,7 @@ export async function POST(request: Request) {
     if (userFound)
       return NextResponse.json(
         {
-          message: "User already exists",
+          message: { user: "User already exists" },
         },
         {
           status: 400,

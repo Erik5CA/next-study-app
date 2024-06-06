@@ -1,11 +1,21 @@
 import FormRoom from "@/components/room/FormRoom";
+import { getRoomWithTopic } from "@/database/rooms";
+import prisma from "@/libs/db";
 
-function UpdateRoom({ params }: { params: { id: string } }) {
+async function getTopics() {
+  const topics = await prisma.topic.findMany();
+  return topics;
+}
+
+async function UpdateRoom({ params }: { params: { id: string } }) {
   const id = parseInt(params.id);
+  const room = await getRoomWithTopic(id);
+  const topics = await getTopics();
+
   console.log(id);
   return (
     <div className="flex items-center p-5 mx-auto justify-center">
-      <FormRoom id={id} />
+      <FormRoom room={room} topics={topics} />
     </div>
   );
 }

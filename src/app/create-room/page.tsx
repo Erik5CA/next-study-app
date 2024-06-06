@@ -1,11 +1,17 @@
-import { createNewRoom } from "@/actions/room-actions";
 import FormRoom from "@/components/room/FormRoom";
-import Link from "next/link";
+import prisma from "@/libs/db";
+
+async function getTopics() {
+  const topics = await prisma.topic.findMany();
+  return topics;
+}
 
 async function CreateRoom() {
+  const topics = await getTopics();
+
   return (
     <div className="flex items-center p-5 mx-auto justify-center">
-      <FormRoom />
+      <FormRoom topics={topics} />
     </div>
   );
 }
