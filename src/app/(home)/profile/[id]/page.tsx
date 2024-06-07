@@ -4,10 +4,15 @@ import { getServerSession } from "next-auth";
 import { getUserWithHostedRoomsAndParticipants } from "@/database/rooms";
 import ListRoomUserHosted from "@/components/room/ListRoomUserHosted";
 import ActivityList from "@/components/activity/ActivityList";
+import { notFound } from "next/navigation";
 
 async function ProfilePage({ params }: { params: { id: string } }) {
   const session = await getServerSession();
   const user = await getUserWithHostedRoomsAndParticipants(parseInt(params.id));
+
+  if (!user) {
+    notFound();
+  }
 
   return (
     <>

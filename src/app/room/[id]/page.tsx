@@ -6,11 +6,17 @@ import { timeAgo } from "@/libs/utils";
 import { Edit, Send, X } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 async function RoomPage({ params }: { params: { id: string } }) {
   const roomId = parseInt(params.id);
   const room = await getInfoRoom(roomId);
   const session = await getServerSession();
+
+  if (!room) {
+    notFound();
+  }
+
   return (
     <div className="p-4 grid grid-cols-1 md:grid-cols-[6fr_2fr] gap-10 md:px-10">
       <div className=" bg-emerald-700 rounded-md h-min">
