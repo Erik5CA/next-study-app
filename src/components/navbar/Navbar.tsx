@@ -5,7 +5,7 @@ import { ChevronDown, User } from "lucide-react";
 import AvatarLink from "../avatar/AvatarLink";
 import Logout from "../buttons/Logout";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import clsx from "clsx";
 import Search from "../search/Search";
 
@@ -39,7 +39,9 @@ function Navbar() {
           </h1>
         </Link>
 
-        <Search type="nav" />
+        <Suspense>
+          <Search type="nav" />
+        </Suspense>
 
         {status === "authenticated" ? (
           <>

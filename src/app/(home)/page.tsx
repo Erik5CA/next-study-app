@@ -16,7 +16,9 @@ async function HomePage({
   return (
     <>
       <div>
-        <Search type="feed" />
+        <Suspense>
+          <Search type="feed" />
+        </Suspense>
 
         <div className="md:hidden flex justify-center items-center gap-3 my-4">
           <Link

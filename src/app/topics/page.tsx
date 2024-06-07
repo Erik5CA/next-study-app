@@ -1,6 +1,7 @@
 import Search from "@/components/search/Search";
 import { filterTopics } from "@/database/rooms";
 import Link from "next/link";
+import { Suspense } from "react";
 
 async function TopicsPage({
   searchParams,
@@ -17,7 +18,9 @@ async function TopicsPage({
           Browser Topic
         </h3>
         <div className="p-5">
-          <Search type="browse" />
+          <Suspense>
+            <Search type="browse" />
+          </Suspense>
           <div className="mt-2">
             {topics.length === 0 ? (
               <p className="text-base text-center text-slate-300">
