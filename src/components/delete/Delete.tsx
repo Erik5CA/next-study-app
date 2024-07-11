@@ -8,7 +8,7 @@ function Delete({
   action: (formData: FormData) => Promise<void>;
 }) {
   return (
-    <div className="hidden md:block bg-emerald-700 rounded-md">
+    <div className=" bg-emerald-700 rounded-md">
       <h3 className="bg-emerald-900 uppercase text-sm p-3 rounded-t-md">
         Back
       </h3>
