@@ -42,4 +42,5 @@ export async function createNewMessage(formData: FormData) {
   });
   console.log(newMessage);
   revalidatePath(`/room/${roomId}`);
+  revalidatePath(`/activity`);
 }

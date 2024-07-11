@@ -1,5 +1,6 @@
 import { createNewMessage } from "@/actions/message-action";
 import AvatarLink from "@/components/avatar/AvatarLink";
+import { CreateMessageForm } from "@/components/message/CreateMessageForm";
 import ListMessages from "@/components/message/ListMessages";
 import { getInfoRoom } from "@/database/rooms";
 import { timeAgo } from "@/libs/utils";
@@ -54,22 +55,7 @@ async function RoomPage({ params }: { params: { id: string } }) {
           <ListMessages messages={room?.messages} />
 
           {session ? (
-            <form
-              className="w-full sticky bottom-0 flex justify-between items-center p-1 rounded-md bg-teal-600"
-              action={createNewMessage}
-            >
-              <input type="hidden" name="roomId" value={room?.id} />
-              <input
-                type="text"
-                name="body"
-                title="Send"
-                className="bg-transparent border-none w-[80%] outline-none p-1 text-sm placeholder:text-slate-300"
-                placeholder="Write your message here..."
-              />
-              <button className="bg-teal-700 flex mr-2 justify-center items-center p-1 rounded-full shadow-sm">
-                <Send />
-              </button>
-            </form>
+            <CreateMessageForm roomId={room.id} />
           ) : (
             <p className="text-center text-slate-300 mt-3 font-bold">
               To send message you must login

@@ -95,9 +95,15 @@ const messageWithUserRoom = Prisma.validator<Prisma.MessageDefaultArgs>()({
   include: { user: true, room: true },
 });
 
+const messageWithUser = Prisma.validator<Prisma.MessageDefaultArgs>()({
+  include: { user: true },
+});
+
 export type MessageWithUserRoom = Prisma.MessageGetPayload<
   typeof messageWithUserRoom
 >;
+
+export type MessageWithUser = Prisma.MessageGetPayload<typeof messageWithUser>;
 
 export async function getUserWithHostedRoomsAndParticipants(userId: number) {
   try {
@@ -150,7 +156,11 @@ export async function getInfoRoom(roomId: number) {
       host: true,
       topic: true,
       participants: true,
-      messages: true,
+      messages: {
+        include: {
+          user: true,
+        },
+      },
     },
   });
   if (room) {
