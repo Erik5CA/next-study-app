@@ -5,7 +5,7 @@ import { ChevronDown, User } from "lucide-react";
 import AvatarLink from "../avatar/AvatarLink";
 import Logout from "../buttons/Logout";
 import { useSession } from "next-auth/react";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import Search from "../search/Search";
 
@@ -18,11 +18,30 @@ interface sessionUser {
 function Navbar() {
   const { data: session, status } = useSession();
   const user = session?.user as sessionUser;
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   // console.log(session);
   const [open, setOpen] = useState(false);
+
   const handleClick = () => {
     setOpen(!open);
   };
+
+  const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(event?.target as Node) &&
+      event.target !== buttonRef.current
+    ) {
+      setOpen(false);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
   return (
     <nav className="p-3 bg-emerald-600 w-full">
       <div className="max-w-[120rem] w-[90%] m-auto flex gap-8 lg:gap-28 items-center">
@@ -49,6 +68,7 @@ function Navbar() {
               <div className="flex gap-3 items-center">
                 <AvatarLink type="nav" user={user} />
                 <button
+                  ref={buttonRef}
                   className="bg-transparent border-none  cursor-pointer rounded hover:bg-emerald-900"
                   onClick={handleClick}
                 >
@@ -56,8 +76,9 @@ function Navbar() {
                 </button>
               </div>
               <div
+                ref={menuRef}
                 className={clsx(
-                  "absolute flex flex-col -bottom-24 right-0 bg-emerald-600 border border-white/50 rounded-md z-50 w-max",
+                  "absolute flex flex-col -bottom-24 right-0 bg-emerald-600 rounded-md z-50 w-max shadow-md border border-white/10",
                   {
                     hidden: open === false,
                   }
